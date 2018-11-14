@@ -6,6 +6,14 @@ const bodyParser = require('body-parser');
 const expressHandlebars = require('express-handlebars');
 const flash = require('connect-flash');
 const session = require('express-session');
+const mongoose = require('mongoose');
+const key = require('./config/keys');
+const passport = require('passport');
+
+require('./config/passport');
+
+
+mongoose.connect(key.MongoURI,  { useNewUrlParser: true });
 
 const app = express();
 app.use(morgan('dev'));
@@ -26,7 +34,15 @@ app.use(session({
   resave: false
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(flash());
+app.use((req,res,next)=>{
+  res.locals.success_messages = req.flash('success');
+  res.locals.error_messages = req.flash('error');
+  next();
+});
 
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
