@@ -27,13 +27,13 @@ passport.use('local', new LocalStrategy({
             return done(null, false, {message: 'Unknown User'});
         }
         //Check the Password
-        const isValid = User.comparePasswords(password, user.password);
+        let isValid = await User.comparePasswords(password, user.password);
         if(isValid){
             return done(null, user);
         } else {
-            return done(null, false, {message: 'Unknown Pasword'});
-        }
+            return done(null, false, {message: 'Unknown Password'});
+        };
     } catch (error) {
-        return done(error, false);
+        return done(error, false); 
     }
 }));

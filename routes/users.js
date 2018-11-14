@@ -12,6 +12,17 @@ const userSchema = Joi.object().keys({
   confirmationPassword: Joi.any().valid(Joi.ref('password')).required(),
 });
 
+//Authorization
+const isAuthenticated = (req, res, next) => {
+  if(req.isAuthenticated()){
+    return next();
+  } else {
+    req.flash('error','Sorry, but you must be registered first');
+    res.redirect('/');
+  }
+};
+
+
 //Register Route
 router.route('/register')
   .get((req, res) => {
@@ -62,8 +73,14 @@ router.route('/login')
   }));
 
 router.route('/dashboard')
-  .get((req,res)=> {
-    res.render('dashboard');
+  .get(isAuthenticated, (req, res) => {
+    res.render('dashboard', {username: req.user.username});
   });
 
+router.route('/logout')
+  .get((req, res) => {
+    req.logOut();
+    req.flash('success', 'Successfully Logged Out');
+    res.redirect('/');
+  });
 module.exports = router;

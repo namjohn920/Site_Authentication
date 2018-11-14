@@ -21,6 +21,7 @@ const userSchema = new Schema({
 
 const User = mongoose.model('users', userSchema);
 module.exports = User;
+
 module.exports.hashPassword = async (password) => {
     try {
         const salt = await bcrypt.genSalt(10);
@@ -33,8 +34,10 @@ module.exports.hashPassword = async (password) => {
 
 module.exports.comparePasswords = async (inputPassword, hashedPassword) =>{
     try {
-        return bcrypt.compare(inputPassword, hashedPassword);
+        const result =await bcrypt.compare(inputPassword, hashedPassword);
+        
+        return result;
     } catch (error){
         throw new Error('Comparing Failed', error);
     }
-}
+};
