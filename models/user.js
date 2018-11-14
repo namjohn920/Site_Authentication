@@ -11,6 +11,13 @@ const userSchema = new Schema({
     },
     password: {
         type: String
+    },
+    secretToken: {
+        type: String
+    },
+    active: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: {

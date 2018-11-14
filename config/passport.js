@@ -28,11 +28,15 @@ passport.use('local', new LocalStrategy({
         }
         //Check the Password
         let isValid = await User.comparePasswords(password, user.password);
-        if(isValid){
-            return done(null, user);
-        } else {
+        if(!isValid){
             return done(null, false, {message: 'Unknown Password'});
         };
+        //Check if email verfied
+        if(!user.active){
+            return done(null, false, {message: 'You need to verify your email first'});
+        };
+            return done(null, user);
+
     } catch (error) {
         return done(error, false); 
     }
